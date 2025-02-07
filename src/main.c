@@ -94,7 +94,7 @@ int main(void) {
 		SDL_Event event;
 		while (SDL_PollEvent(&event)) {
 			if (event.type == SDL_QUIT) { // When we click the close window button set the appIsRunning to exit the main loop.
-				appIsRunning = false;     // We still render one frame but that really is a no biggy
+				appIsRunning = false;     // We still render one frame but that is a no biggy.
 			}
 		}
 
