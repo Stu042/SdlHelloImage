@@ -1,7 +1,7 @@
 #include <stdbool.h>
 #include <stdio.h>
-#include <SDL2/SDL.h>
-#include <SDL2/SDL_image.h>
+#include <SDL.h>
+#include <SDL_image.h>
 
 
 // Just using a number is generally bad practice, so here we define the return values the app will use.
@@ -33,7 +33,9 @@ const char *imagePath = "assets/Croft.png";
 
 
 // App start
-int main(void) {
+int main(int argc, char *argv[]) {
+	printf("Starting app\n");
+
 	// Start SDL, we are using video and events, events will init automatically when we as for video.
 	if (SDL_Init(SDL_INIT_VIDEO) < 0) {
 		printf("Error: Unable to initialise SDL. SDL Error: %s\n", SDL_GetError());

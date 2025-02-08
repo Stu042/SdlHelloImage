@@ -22,17 +22,32 @@ FetchContent_Declare(
         GIT_PROGRESS TRUE
 )
 FetchContent_MakeAvailable(SDL2_image)
+set(SDL2_SHARED OFF)
+set(SDL2_IMAGE_SHARED OFF)
 
+# this is not how you add sdl2_image include directory, it works (for debug) but it wrong
+include_directories(${CMAKE_PROJECT_NAME} SDL2::SDL2 ${SDL2_image_SOURCE_DIR}/include)
 
-include_directories(SdlHelloImage ${SDL2_INCLUDE_DIRS} ${SDL2_image_INCLUDE_DIRS})
-include_directories(headers)
+add_executable(${CMAKE_PROJECT_NAME} src/main.c)
 
-add_executable(SdlHelloImage src/main.c)
-
-target_link_libraries(SdlHelloImage PRIVATE SDL2::SDL2 SDL2_image::SDL2_image)
+target_link_libraries(${CMAKE_PROJECT_NAME} PRIVATE SDL2main SDL2 SDL2_image)
 
 add_custom_command(
-        TARGET SdlHelloImage POST_BUILD
-        COMMAND ${CMAKE_COMMAND} -E copy_directory
-        ${CMAKE_SOURCE_DIR}/assets
-        ${CMAKE_CURRENT_BINARY_DIR}/assets)
+    TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+    COMMAND ${CMAKE_COMMAND} -E copy_directory
+    ${CMAKE_SOURCE_DIR}/assets
+    ${CMAKE_CURRENT_BINARY_DIR}/assets)
+
+# workaround, copy dlls manually here
+if (WIN32)
+    add_custom_command(
+        TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${SDL2_image_BINARY_DIR}/SDL2_imaged.dll
+        ${CMAKE_CURRENT_BINARY_DIR}/SDL2_imaged.dll)
+    add_custom_command(
+        TARGET ${CMAKE_PROJECT_NAME} POST_BUILD
+        COMMAND ${CMAKE_COMMAND} -E copy
+        ${CMAKE_SOURCE_DIR}/cmake-build-debug/_deps/sdl2-build/SDL2d.dll
+        ${CMAKE_CURRENT_BINARY_DIR}/SDL2d.dll)
+endif ()
